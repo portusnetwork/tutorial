@@ -1,0 +1,95 @@
+{
+  "config_version": 1,
+  "host": "localhost",
+  "port": 8080,
+  "name": "Demo Service",
+  "version": "0.1",
+  "description": "This is my first service",
+  "endpoints": [
+    {
+      "id": "getCoinPrice",
+      "endpoint": "/coinPrice/{id}",
+      "method": "GET",
+      "response": {
+        "format": "json",
+        "key": "market_data.current_price.usd",
+        "convert_expr": "uint(double(_value) * double(100))",
+        "value_type": "uint64"
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/v3/coins/{id}",
+          "method": "GET",
+          "host": [
+            "https://api.coingecko.com"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "getCoinDesc",
+      "endpoint": "/coinDesc/{id}",
+      "method": "GET",
+      "response": {
+        "format": "json",
+        "key": "description.en",
+        "value_type": "string"
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/v3/coins/{id}",
+          "method": "GET",
+          "host": [
+            "https://api.coingecko.com"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coinExists",
+      "endpoint": "/coinExists/{id}",
+      "method": "GET",
+      "response": {
+        "format": "json",
+        "key": "description.en",
+        "convert_expr": "true",
+        "value_type": "bool"
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/v3/coins/{id}",
+          "method": "GET",
+          "host": [
+            "https://api.coingecko.com"
+          ]
+        }
+      ]
+    }
+  ],
+  "extra_config": {
+    "github_com/portusnetwork/portkey/webserver": {
+      "listenAddress": "0.0.0.0:30000",
+      "enabled": false,
+      "rootPath": "/tmp",
+      "users": [
+        { "admin":  "0DPiKuNIrrVmD8IUCuw1hQxNqZc=" }
+      ]
+    },
+    "github_com/portusnetwork/portkey/ethereum": {
+      "chainId": 31337,
+      "rpcUrl": "http://127.0.0.1:8545",
+      "portusContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "authorizers": [
+        "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+      ],
+      "providerMnemonic": "test test test test test test test test test test test junk",
+      "blockHistoryLimit": 600
+    },
+    "github_com/portusnetwork/portkey/gologging": {
+      "level": "INFO",
+      "prefix": "[PORTKEY]",
+      "syslog": false,
+      "stdout": true
+    }
+  }
+}
